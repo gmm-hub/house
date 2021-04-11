@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gmm.house.dao.EvaluateMapper">
+    <resultMap id="evaluateMap" type="Evaluate">
+        <result column="eid" property="eid"></result>
+        <result column="content" property="content"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="grade" property="grade"></result>
+        <collection property="user" ofType="User">
+            <result column="uid" property="uid"></result>
+            <result column="username" property="username"></result>
+            <result column="password" property="password"></result>
+            <result column="phone" property="phone"></result>
+        </collection>
+    </resultMap>
+    <select id="findEvaluateByHid" parameterType="int" resultMap="evaluateMap">
+        select * from evaluate e join user u on e.user_id =u.uid where e.house_id=#{id}
+    </select>
+    <insert id="addEvaluate" parameterType="Evaluate">
+        insert into evaluate(content,create_time,grade,user_id,house_id) value (#{content},#{create_time},#{grade},#{user.uid},#{house.hid})
+    </insert>
+    <select id="findUserEvaluate" parameterType="int" resultType="Evaluate">
+        select * from evaluate where user_id=#{uid}
+    </select>
+    <delete id="delEvaluateById" parameterType="int">
+        delete from evaluate where eid=#{id}
+    </delete>
+</mapper>

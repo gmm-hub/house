@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gmm.house.dao.UserMapper">
+    <select id="login" parameterType="User" resultType="User">
+        select * from user where username=#{username} and password = #{password}
+    </select>
+    <select id="findUserByName" parameterType="String" resultType="User">
+        select * from user where username=#{name}
+    </select>
+    <insert id="register" parameterType="User">
+        insert into user(username,password,phone) value (#{username},#{password},#{phone})
+    </insert>
+<select id="findUserById" parameterType="int" resultType="User">
+    select * from user where uid= #{id}
+</select>
+    <update id="updateUserById" parameterType="User">
+        update user set username=#{username},password=#{password},phone=#{phone} where
+        uid=#{uid}
+    </update>
+    <select id="findUserHouse" parameterType="int" resultType="House">
+        select * from house where user_id=#{uid}
+    </select>
+</mapper>

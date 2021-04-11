@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gmm.house.dao.HouseMapper">
+    <select id="findHouseAll" parameterType="String" resultType="House">
+        select * from house order by releaseTime desc
+    </select>
+    <select id="findHouseById" parameterType="int" resultType="House">
+        select * from house where hid = #{id}
+    </select>
+    <select id="findHouseCount" parameterType="String" resultType="int">
+        select count(*) from house where title like concat('%',#{name},'%')
+    </select>
+    <select id="housePriceAsc" resultType="House">
+        select * from house order by price asc,area desc
+    </select>
+    <select id="housePriceDesc" resultType="House">
+        select * from house order by price desc,area desc
+    </select>
+    <select id="findUserHouse" parameterType="int" resultType="House">
+        select * from house where user_id=#{id}
+    </select>
+    <update id="delHouseById" parameterType="int">
+        update house set status=1 where hid=#{id}
+    </update>
+    <insert id="addHouse" parameterType="House">
+        INSERT INTO house(title, model, area, type, price, address, image, orientation, releaseTime, floor, detail, linkPeople,linkPhone,user_id,status) VALUES
+        (#{title},#{model}, #{area}, #{type}, #{price}, #{address}, #{image}, #{orientation}, #{releaseTime}, #{floor}, #{detail}, #{linkPeople},#{linkPhone},#{user.uid},#{status})
+    </insert>
+    <select id="findHouseList" parameterType="Query" resultType="House">
+        select * from house
+        <where>
+        <if test="searchName!='' and searchName!=null">
+            and title like concat('%',#{searchName},'%')
+        </if>
+        <if test="houseType!='' and houseType!=null">
+            and type = #{houseType}
+        </if>
+        <if test="minPrice!=null and maxPrice==null">
+            and price &gt; #{minPrice}
+        </if>
+        <if test="minPrice==null and maxPrice!=null">
+            and price &lt; #{maxPrice}
+        </if>
+        <if test="minPrice!=null and maxPrice!=null">
+            and price between #{minPrice} and #{maxPrice}
+        </if>
+        </where>
+        <if test='orderByName=="releaseTime"'>
+             order by #{orderByName}
+        </if>
+        <if test='orderByName=="price1"'>
+             order by price
+        </if>
+        <if test='orderByName=="price2"'>
+             order by price desc
+        </if>
+    </select>
+    <select id="findUnSaleCount" resultType="int">
+        select count(*) from house where status=0
+    </select>
+    <select id="findSaleCount" resultType="int">
+        select count(*) from house where status=1
+    </select>
+    <select id="findHouseGrade" resultType="House">
+        select h.*
+        from house h,evaluate e
+        where e.house_id=h.hid
+        group by e.house_id
+        order by AVG (e.grade) desc
+    </select>
+    <update id="updateHouse" parameterType="House">
+         update house set title=#{title},model=#{model},area=#{area},type=#{type},price=#{price},address=#{address}, image=#{image}, orientation=#{orientation}, releaseTime=#{releaseTime}, floor=#{floor}, detail=#{detail}, linkPeople=#{linkPeople},linkPhone=#{linkPhone},status=#{status}
+        where hid=#{hid}
+    </update>
+</mapper>
